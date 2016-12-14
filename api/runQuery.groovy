@@ -73,7 +73,11 @@ try {
   def out = rManager.runQuery(query, type, ontology, iVersion, direct, labels)
   def end = System.currentTimeMillis()
   results.put('time', (end - start))
-  results.put('result', out.size())
+  if (count){
+	results.put('result', {count:out.size()})
+  }else{
+	results.put('result', out)
+  }
 
   def logstring = ""
   logstring += query?:""
