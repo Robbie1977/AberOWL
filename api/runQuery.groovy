@@ -25,6 +25,7 @@ def type = params.type
 def ontology = params.ontology
 def direct = params.direct
 def labels = params.labels
+def count = params.count
 //def sVersion = params.version
 def sVersion = null
 def rManager = application.rManager
@@ -46,7 +47,14 @@ if (direct == "true") {
 } else {
   direct = false
 }
-
+if(count == null) {
+  count = 'false'
+}
+if (count == 'false') {
+  count = false
+} else {
+  count = true
+}
 if(labels == null) {
   labels = 'false'
 }
@@ -65,7 +73,7 @@ try {
   def out = rManager.runQuery(query, type, ontology, iVersion, direct, labels)
   def end = System.currentTimeMillis()
   results.put('time', (end - start))
-  results.put('result', out)
+  results.put('result', out.size())
 
   def logstring = ""
   logstring += query?:""
@@ -73,6 +81,7 @@ try {
   logstring += "\t"+(ontology?:"")
   logstring += "\t"+(direct?:"")
   logstring += "\t"+(labels?:"")
+  logstring += "\t"+(count?:"")
   logstring += "\t"+(out.size()?:"")
   logstring += "\t"+((end - start)?:"")
   log.info logstring
