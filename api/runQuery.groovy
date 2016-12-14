@@ -74,7 +74,7 @@ try {
   def end = System.currentTimeMillis()
   results.put('time', (end - start))
   if (count){
-	results.put('result', {count:out.size()})
+	results.put('result', [count:out.size()])
   }else{
 	results.put('result', out)
   }
