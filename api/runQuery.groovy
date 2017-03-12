@@ -17,7 +17,7 @@ if (!application.log) {
   log.info 'Logger created'
 }
 def log = application.log
-	    
+
 def params = Util.extractParams(request)
 
 def query = params.query
@@ -70,6 +70,7 @@ try {
   def results = new HashMap()
   def start = System.currentTimeMillis()
   def iVersion = Integer.parseInt(sVersion);
+
   def out = rManager.runQuery(query, type, ontology, iVersion, direct, labels)
   def end = System.currentTimeMillis()
   results.put('time', (end - start))
@@ -91,27 +92,27 @@ try {
   log.info logstring
 
   if (!count){
-	  results['result'] = results['result'].sort {LinkedHashMap<String,LinkedHashSet> a,b ->
-	    if((a.containsKey("label"))&&(b.containsKey("label"))) {
-	      return (a.get("label").toList().get(0).compareTo(b.get("label").toList().get(0)));
-	    }else if(a.containsKey("label")){
-	      return(1);
-	    }else if(b.containsKey("label")){
-	      return(-1);
-	    }else{
-	      return(0);
-	    }
+    results['result'] = results['result'].sort { a,b ->
+      if((a.containsKey("label"))&&(b.containsKey("label"))) {
+        return (a.get("label").compareTo(b.get("label")));
+      }else if(a.containsKey("label")){
+        return(1);
+      }else if(b.containsKey("label")){
+        return(-1);
+      }else{
+        return(0);
+      }
 	  }
   }
+  
   print new JsonBuilder(results).toString()
 } catch(java.lang.IllegalArgumentException e) {
   response.setStatus(400)
-  println new JsonBuilder([ 'err': true, 'message': 'Ontology not found.' ]).toString() 
+  println new JsonBuilder([ 'err': true, 'message': 'Ontology not found.' ]).toString()
 } catch(org.semanticweb.owlapi.manchestersyntax.renderer.ParserException e) {
   response.setStatus(400)
-  println new JsonBuilder([ 'err': true, 'message': 'Query parsing error: ' + e.getMessage() ]).toString() 
+  println new JsonBuilder([ 'err': true, 'message': 'Query parsing error: ' + e.getMessage() ]).toString()
 } catch(Exception e) {
   response.setStatus(400)
-  println new JsonBuilder([ 'err': true, 'message': 'Generic query error: ' + e.getMessage() ]).toString() 
+  println new JsonBuilder([ 'err': true, 'message': 'Generic query error: ' + e.getMessage() ]).toString()
 }
-
